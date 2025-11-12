@@ -101,10 +101,10 @@ def train(hyp, opt, device, tb_writer=None):
     # Freeze
     freeze = [f'model.{x}.' for x in (freeze if len(freeze) > 1 else range(freeze[0]))]  # parameter names to freeze (full or partial)
     for k, v in model.named_parameters():
-        v.requires_grad = True  # train all layers
-        if any(x in k for x in freeze):
-            print('freezing %s' % k)
-            v.requires_grad = False
+        v.requires_grad = True  # unfreeze all layers
+        if 'backbone' in k: 
+            v.requires_grad = False  # freeze backbone
+            logger.info(f'Freezing {k} layer.')
 
     # Optimizer
     nbs = 64  # nominal batch size
